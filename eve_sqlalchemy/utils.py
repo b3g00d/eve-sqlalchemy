@@ -42,7 +42,7 @@ def validate_filters(where, resource):
     return None
 
 
-def sqla_object_to_dict(obj, fields):
+def sqla_object_to_dict(obj, fields, allowed_none_values=True):
     """ Creates a dict containing copies of the requested fields from the
     SQLAlchemy query result """
     if config.LAST_UPDATED not in fields:
@@ -70,7 +70,8 @@ def sqla_object_to_dict(obj, fields):
             # (may be wrong embedding parameter)
             pass
 
-    remove_none_values(result)
+    if not allowed_none_values:
+        remove_none_values(result)
     return result
 
 

@@ -190,6 +190,8 @@ class SQL(DataLayer):
             self._datasource_ex(resource, [], client_projection, None,
                                 client_embedded)
 
+        allowed_none_values = lookup.get('allowed_none_values', True)
+        lookup.pop('allowed_none_values', None)
         lookup = rename_relationship_fields_in_dict(model, lookup)
         id_field = self._id_field(resource)
         if isinstance(lookup.get(id_field), dict) \
@@ -203,7 +205,15 @@ class SQL(DataLayer):
             query = self.driver.session.query(model)
             document = query.filter(*filter_).first()
 
-        return sqla_object_to_dict(document, fields) if document else None
+        return (
+            sqla_object_to_dict(
+                document,
+                fields,
+                allowed_none_values=allowed_none_values
+            )
+            if document
+            else None
+        )
 
     def find_one_raw(self, resource, _id):
         model, filter_, fields, _ = \
