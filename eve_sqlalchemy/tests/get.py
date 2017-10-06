@@ -403,6 +403,24 @@ class TestGetItem(eve_get_tests.TestGetItem, TestBase):
         response, status = self.get('products', item=sku)
         self.assertItemResponse(response, status, 'products')
 
+    def test_getitem_with_none_value_fields(self):
+        # Eve test uses the Mongo layer directly.
+        # TODO: Fix directly in Eve and remove this override
+
+        # create random contact
+        fake_contact = self.random_contacts(1)
+        fake_contact_id = self.app.data.insert('contacts', fake_contact)[0]
+        # update first invoice to reference the new contact
+        self.app.data.update('invoices', self.invoice_id,
+                             {'person': fake_contact_id, 'inv_number': None},
+                             None)
+
+        # GET all invoices by new contact
+        response, status = self.get('users/%s/invoices/%s' % (fake_contact_id,
+                                                              self.invoice_id))
+        self.assert200(status)
+        self.assertIsNone(response['inv_number'])
+
 
 class TestHead(eve_get_tests.TestHead, TestBase):
     pass
