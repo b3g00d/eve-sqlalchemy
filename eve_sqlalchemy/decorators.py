@@ -26,6 +26,7 @@ sqla_type_mapping = {
     types.Date: 'datetime',
     types.DateTime: 'datetime',
     types.DATETIME: 'datetime',
+    types.DECIMAL: 'float',
     types.PickleType: None,
     types.JSON: 'json',
     postgresql.JSON: 'json'
