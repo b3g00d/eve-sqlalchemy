@@ -21,7 +21,7 @@ from eve.versioning import (
 )
 from flask import current_app as app
 
-from eve_sqlalchemy.utils import dict_update, remove_none_values
+from eve_sqlalchemy.utils import dict_update
 
 
 class ValidatorSQL(Validator):
@@ -156,12 +156,11 @@ class ValidatorSQL(Validator):
         dcopy = None
         if self._original_document:
             dcopy = copy.copy(document)
-            # Use dict_update and remove_none_values from utils, so existing
-            # values in document don't get overridden by the original document
-            # and None values are removed. Otherwise handling in parent method
+            # Use dict_update from utils, so existing
+            # values in document don't get overridden by the original document.
+            # Otherwise handling in parent method
             # does not work as expected.
             dict_update(dcopy, self._original_document)
-            remove_none_values(dcopy)
         return super(ValidatorSQL, self)._validate_dependencies(
             dcopy or document, dependencies, field, break_on_error)
 

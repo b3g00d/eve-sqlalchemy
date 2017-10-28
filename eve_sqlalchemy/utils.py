@@ -39,12 +39,6 @@ def dict_update(d, u):
             d[k] = u[k]
 
 
-def remove_none_values(dict_):
-    for k, v in list(dict_.items()):
-        if v is None:
-            del(dict_[k])
-
-
 def validate_filters(where, resource):
     allowed = config.DOMAIN[resource]['allowed_filters']
     if '*' not in allowed:
@@ -83,7 +77,6 @@ def sqla_object_to_dict(obj, fields):
             # (may be wrong embedding parameter)
             pass
 
-    remove_none_values(result)
     return result
 
 
