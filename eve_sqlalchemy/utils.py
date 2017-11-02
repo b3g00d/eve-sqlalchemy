@@ -39,6 +39,12 @@ def dict_update(d, u):
             d[k] = u[k]
 
 
+def remove_none_values(dict_):
+    for k, v in list(dict_.items()):
+        if v is None:
+            del(dict_[k])
+
+
 def validate_filters(where, resource):
     allowed = config.DOMAIN[resource]['allowed_filters']
     if '*' not in allowed:
