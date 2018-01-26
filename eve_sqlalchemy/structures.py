@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 
 from .utils import sqla_object_to_dict
 from sqlalchemy.orm.attributes import InstrumentedAttribute
+from sqlalchemy.sql.elements import UnaryExpression
 
 
 class SQLAResultCollection(object):
@@ -37,8 +38,14 @@ class SQLAResultCollection(object):
             self._query = self._query.filter(*self._spec)
         if self._sort:
             for sort in self._sort:
+                # for default (asc) sort related resource
                 if type(sort) == InstrumentedAttribute:
                     self._query = self._query.join(sort.class_).order_by(sort)
+                # for desc sort related resource
+                elif isinstance(sort, UnaryExpression):
+                    self._query = self._query\
+                        .join(sort.element.table)\
+                        .order_by(sort)
                 else:
                     self._query = self._query.order_by(sort)
 
