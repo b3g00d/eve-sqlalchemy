@@ -10,6 +10,7 @@
 from __future__ import unicode_literals
 
 from .utils import sqla_object_to_dict
+from sqlalchemy.orm.attributes import InstrumentedAttribute
 
 
 class SQLAResultCollection(object):
@@ -35,7 +36,11 @@ class SQLAResultCollection(object):
         if self._spec:
             self._query = self._query.filter(*self._spec)
         if self._sort:
-            self._query = self._query.order_by(*self._sort)
+            for sort in self._sort:
+                if type(sort) == InstrumentedAttribute:
+                    self._query = self._query.join(sort.class_).order_by(sort)
+                else:
+                    self._query = self._query.order_by(sort)
 
         # save the count of items to an internal variables before applying the
         # limit to the query as that screws the count returned by it
